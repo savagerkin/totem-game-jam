@@ -19,7 +19,8 @@ public class DeathAnimation : MonoBehaviour
     [SerializeField] private BoxCollider boxCollider;
     [SerializeField] private AudioClip deathSound;
     private AudioSource audioSource;
-
+    [SerializeField] private Player _player;
+    
     private void Start()
     {
         audioSource = gameObject.GetComponent<AudioSource>();
