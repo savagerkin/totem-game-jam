@@ -30,9 +30,9 @@ public class Road : MonoBehaviour
     private IEnumerator SpawnLoop()
     {
         while (true) {
-            laneDirection = transform.rotation * Vector3.right;
+            laneDirection = transform.rotation * Vector3.forward;
 
-            Car spawnedCar = Instantiate(carPrefab, spawnPosition.position, transform.rotation).GetComponent<Car>();
+            Car spawnedCar = Instantiate(carPrefab, spawnPosition.position, spawnPosition.rotation).GetComponent<Car>();
             spawnedCar.direction = laneDirection;
             spawnedCar.velocity = Random.Range(1, 10);
             spawnedCar.acceleration = Random.Range(1, 10);

@@ -59,6 +59,7 @@ public class Car : MonoBehaviour
 
         // Debug.DrawLine(transform.position, transform.position + direction * 3);
 
+        rb.freezeRotation = false;
         rb.AddForce(direction * explosionForce, ForceMode.Impulse);
         StartCoroutine(Death());
     }
