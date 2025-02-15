@@ -33,7 +33,7 @@ public class SniperShoot : MonoBehaviour
 
     [SerializeField] private Animator _animator;
     private float velocity = 0.0f;
-
+    [SerializeField] private LayerMask layerMask;
     void Update()
     {
         if (Input.GetMouseButtonDown(1))
@@ -59,7 +59,7 @@ public class SniperShoot : MonoBehaviour
         velocityText.text = Mathf.RoundToInt(velocity) + " km/h";
 
         RaycastHit hit;
-        if (Physics.Raycast(scopeTransform.position, scopeTransform.forward, out hit))
+        if (Physics.Raycast(scopeTransform.position, scopeTransform.forward, out hit, Mathf.Infinity, layerMask))
         {
             if (hit.transform.tag == "Car")
             {

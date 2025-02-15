@@ -51,7 +51,6 @@ public class Car : MonoBehaviour
         Destroy(gameObject);
         Destroy(explosionInstance, 2f);
     }
-
     public void Explode() {
         rb.isKinematic = false;
 
