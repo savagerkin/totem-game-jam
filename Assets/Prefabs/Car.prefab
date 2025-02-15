@@ -151,10 +151,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 2902476288896253195}
   boxCollider: {fileID: 6285408221785262671}
+  scoreSystem: {fileID: 0}
   direction: {x: 0, y: 0, z: 0}
   velocity: 0
   acceleration: 0
   lifetime: 60
+  noShotReward: 0
   moving: 1
   explosionForce: 50
   deathDelay: 4
+  lane: 0
+  maxVelocity: 50
+  carSound: {fileID: 0}
+  explosionEffect: {fileID: 0}
+  boomSound: {fileID: 0}

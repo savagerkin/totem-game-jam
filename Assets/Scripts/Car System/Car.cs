@@ -9,6 +9,7 @@ public class Car : MonoBehaviour
 {
     public Rigidbody rb;
     public BoxCollider boxCollider;
+    public ScoreSystem scoreSystem;
 
     public Vector3 direction;
     public float velocity;
@@ -17,8 +18,6 @@ public class Car : MonoBehaviour
 
     public float noShotReward;
 
-    public float averageVelocity;
-
     public bool moving = true;
 
     public float explosionForce;
@@ -26,10 +25,16 @@ public class Car : MonoBehaviour
 
     public int lane;
 
+    private bool speeding;
+    public float maxVelocity;
+
     [SerializeField] private AudioClip carSound;
 
     private void Start()
     {
+        speeding = false;
+        noShotReward = 0;
+
         audioSource = gameObject.GetComponent<AudioSource>();
     }
 
@@ -44,6 +49,23 @@ public class Car : MonoBehaviour
         if (moving)
         {
             velocity += acceleration * Time.deltaTime;
+
+            if (maxVelocity < velocity) { 
+                velocity = maxVelocity;
+            }
+
+            if (speeding)
+            {
+                noShotReward += (maxVelocity - velocity) * Time.deltaTime;
+            }
+
+            if (scoreSystem.speedLimits[lane] < velocity)
+            {
+                speeding = true;
+            }
+            else {
+                speeding = false;
+            }
         }
     }
 

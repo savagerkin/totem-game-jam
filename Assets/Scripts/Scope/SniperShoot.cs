@@ -19,6 +19,7 @@ public class SniperShoot : MonoBehaviour
     [SerializeField] private TMP_Text velocityText;
     [SerializeField] private AudioClip shootSound;
     [SerializeField] private AudioSource audioSource;
+    [SerializeField] private ScoreSystem scoreSystem;
 
     void Start()
     {
@@ -69,6 +70,9 @@ public class SniperShoot : MonoBehaviour
                         StartCoroutine(ShootWithCooldown());
                         playerCamera.Shake();
                         car.Explode();
+
+                        scoreSystem.updateScore(car, ScoreAction.Shot);
+
                         Debug.Log("Car Exploded");
                     }
                 }

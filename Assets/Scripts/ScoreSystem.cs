@@ -13,9 +13,9 @@ public class ScoreSystem : MonoBehaviour
     public Sprite watcherMedium;
     public Sprite watcherAngry;
 
-    public Color happyColor;
-    public Color mediumColor;
-    public Color angryColor;
+    public Color happyColor = Color.white;
+    public Color mediumColor = Color.white;
+    public Color angryColor = Color.white;
 
     public Image watcher;
     public Slider slider;
@@ -37,7 +37,11 @@ public class ScoreSystem : MonoBehaviour
     public int notShot;
     public float score;
 
+    private bool dead = false;
+
     public void updateScore(Car car, ScoreAction action) {
+        if (dead) return;
+
         if (action == ScoreAction.Shot)
         {
             if (speedLimits[car.lane] <= car.velocity)
@@ -55,7 +59,8 @@ public class ScoreSystem : MonoBehaviour
         }
 
         if (score <= minScore) {
-            deathAnimation.die();
+            StartCoroutine(deathAnimation.die());
+            dead = true;
         }
         else if (score >= maxScore)
         {
@@ -67,30 +72,24 @@ public class ScoreSystem : MonoBehaviour
 
     private void updateUI()
     {
-        float normalizedScore = (minScore + score) / (maxScore - minScore);
+        float normalizedScore = (score - minScore) / (maxScore - minScore);
         slider.value = normalizedScore;
 
-        if (normalizedScore < 1 / 3)
+        Debug.Log(normalizedScore);
+
+        if (normalizedScore < 1.0f / 3.0f)
         {
-            if (watcher.sprite != watcherAngry) {
-                // watcher changed to angry sprite
-                watcher.sprite = watcherAngry;
-                sliderImage.color = Hex
-            }
+            watcher.sprite = watcherAngry;
+            sliderImage.color = angryColor;
         }
-        else if (normalizedScore < 2 / 3)
+        else if (normalizedScore < 2.0f / 3.0f)
         {
-            if (watcher.sprite != watcherMedium)
-            {
-                // watcher changed to angry sprite
-                watcher.sprite = watcherMedium;
-            }
+            watcher.sprite = watcherMedium;
+            sliderImage.color = mediumColor;
         }
         else {
-            if (watcher.sprite != watcherHappy) {
-                // watcher changed to happy sprite
-                watcher.sprite = watcherHappy;
-            }
+            watcher.sprite = watcherHappy;
+            sliderImage.color = happyColor;
         }
     }
 }

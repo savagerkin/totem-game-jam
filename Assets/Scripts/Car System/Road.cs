@@ -10,6 +10,7 @@ public class Road : MonoBehaviour
 {
     public GameObject carPrefab;
     public Transform spawnPosition;
+    public ScoreSystem scoreSystem;
 
     public Vector3 laneDirection;
     public float spawnDelay;
@@ -20,6 +21,7 @@ public class Road : MonoBehaviour
     public float deceleration;
 
     private List<Car> cars;
+
 
     private void Start()
     {
@@ -36,6 +38,7 @@ public class Road : MonoBehaviour
             spawnedCar.direction = laneDirection;
             spawnedCar.velocity = Random.Range(1, 10);
             spawnedCar.acceleration = Random.Range(1, 10);
+            spawnedCar.scoreSystem = scoreSystem;
 
             cars.Add(spawnedCar);
 
