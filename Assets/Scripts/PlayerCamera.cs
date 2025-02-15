@@ -10,6 +10,7 @@ public struct CameraInput
     public Vector2 Look;
 }
 
+
 public class PlayerCamera : MonoBehaviour
 {
     [SerializeField] private Slider slider;
@@ -17,9 +18,12 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField] private float shakeDuration = 0.5f;
     [SerializeField] private float shakeMagnitude = 0.1f;
     private Vector3 _eulerAngles;
+    [SerializeField] private TMP_Text sliderValue;
     private void Update()
     {
         sensivity = slider.value;
+        sliderValue.text = "Sensitivity: " + slider.value;
+
     }
 
     public void Initialize(Transform target)
@@ -37,6 +41,7 @@ public class PlayerCamera : MonoBehaviour
     public void UpdateRotation(CameraInput input)
     {
         _eulerAngles += new Vector3(-input.Look.y, input.Look.x) * sensivity;
+        _eulerAngles.x = Mathf.Clamp(_eulerAngles.x, -76f, 67f); // Clamp the x-axis rotation
         transform.eulerAngles = _eulerAngles;
     }
 
