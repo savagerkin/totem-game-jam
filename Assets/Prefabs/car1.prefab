@@ -52,6 +52,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: car1
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d5bbafa9fad12f04dae9f5a877918280, type: 3}
+      propertyPath: m_TagString
+      value: Car
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: -8700617353114198275, guid: d5bbafa9fad12f04dae9f5a877918280, type: 3}
@@ -142,3 +146,4 @@ MonoBehaviour:
   moving: 1
   explosionForce: 40
   deathDelay: 4
+  explosionEffect: {fileID: 1799350504522262704, guid: 17628e1c67e234e9583072477f1eee94, type: 3}
