@@ -20,7 +20,9 @@ public class DeathAnimation : MonoBehaviour
     [SerializeField] private AudioClip deathSound;
     private AudioSource audioSource;
     [SerializeField] private Player _player;
-    
+
+    [SerializeField] private GameObject gameOverScreen;
+
     private void Start()
     {
         audioSource = gameObject.GetComponent<AudioSource>();
@@ -30,15 +32,17 @@ public class DeathAnimation : MonoBehaviour
 
     private float toSeconds = 42;
     private float fromSeconds = 40;
+
     public IEnumerator die()
     {
+        _player.StopControls();
         motor.enabled = false;
         audioSource.time = fromSeconds;
         audioSource.PlayOneShot(deathSound);
-        
+
         if (toSeconds > 0 && toSeconds > fromSeconds)
             audioSource.SetScheduledEndTime(AudioSettings.dspTime + (toSeconds - fromSeconds));
-    
+
         playerCamera.AdjustableShake(5f, 0.1f, 1f);
         yield return new WaitForSeconds(5);
         playerCamera.enabled = false;
@@ -49,6 +53,10 @@ public class DeathAnimation : MonoBehaviour
         Explode();
         yield return new WaitForSeconds(2);
         animator.SetTrigger("Death");
+        yield return new WaitForSeconds(2);
+        gameOverScreen.SetActive(true);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;  
     }
 
     private void Explode()
