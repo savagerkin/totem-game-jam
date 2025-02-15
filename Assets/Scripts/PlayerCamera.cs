@@ -23,18 +23,19 @@ public class PlayerCamera : MonoBehaviour
     {
         transform.position = target.position;
     }
-        
-    
+
 
     public void UpdateRotation(CameraInput input)
     {
         _eulerAngles += new Vector3(-input.Look.y, input.Look.x) * sensivity;
         transform.eulerAngles = _eulerAngles;
     }
+
     public void Shake()
     {
         StartCoroutine(ShakeCoroutine());
     }
+
     private IEnumerator ShakeCoroutine()
     {
         float elapsed = 0.0f;
@@ -50,5 +51,33 @@ public class PlayerCamera : MonoBehaviour
 
             yield return null;
         }
+    }
+
+    public void AdjustableShake(float duration, float minMagnitude, float maxMagnitude)
+    {
+        StartCoroutine(AdjustableShakeCoroutine(duration, minMagnitude, maxMagnitude));
+    }
+
+    private IEnumerator AdjustableShakeCoroutine(float duration, float minMagnitude, float maxMagnitude)
+    {
+        float elapsed = 0.0f;
+        Vector3 originalPosition = transform.localPosition;
+
+        while (elapsed < duration)
+        {
+            float t = elapsed / duration;
+            float magnitude = Mathf.Lerp(minMagnitude, maxMagnitude, t);
+
+            float x = Random.Range(-1f, 1f) * magnitude;
+            float y = Random.Range(-1f, 1f) * magnitude;
+
+            transform.localPosition = originalPosition + new Vector3(x, y, 0);
+
+            elapsed += Time.deltaTime;
+
+            yield return null;
+        }
+
+        transform.localPosition = originalPosition;
     }
 }

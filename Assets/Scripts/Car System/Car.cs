@@ -43,11 +43,13 @@ public class Car : MonoBehaviour
             rb.MovePosition(newPosition);
         }
     }
-
+    [SerializeField] private GameObject explosionEffect;
     private IEnumerator Death()
     {
+        GameObject explosionInstance = Instantiate(explosionEffect, transform.position, Quaternion.identity);
         yield return new WaitForSeconds(2);
         Destroy(gameObject);
+        Destroy(explosionInstance, 2f);
     }
 
     public void Explode() {

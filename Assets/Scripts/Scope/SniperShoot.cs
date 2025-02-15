@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using Unity.Mathematics;
 using Unity.VisualScripting;
@@ -10,12 +11,16 @@ public class SniperShoot : MonoBehaviour
     private Volume volume;
     private DepthOfField depthOfField;
     private bool isScoped = false;
+    private bool canShoot = true;
     [SerializeField] private Camera camera;
     [SerializeField] private PlayerCamera playerCamera;
     [SerializeField] private Transform sniperTransform;
     [SerializeField] private Transform scopeTransform;
     [SerializeField] private GunSway gunSway;
     [SerializeField] private TMP_Text velocityText;
+    [SerializeField] private AudioClip shootSound;
+    [SerializeField] private AudioSource audioSource;
+
     void Start()
     {
         isScoped = false;
@@ -28,6 +33,7 @@ public class SniperShoot : MonoBehaviour
 
     [SerializeField] private Animator _animator;
     private float velocity = 0.0f;
+
     void Update()
     {
         if (Input.GetMouseButtonDown(1))
@@ -49,19 +55,24 @@ public class SniperShoot : MonoBehaviour
                 isScoped = false;
             }
         }
-        velocityText.text = velocity + " km/h";
+
+        velocityText.text = Mathf.RoundToInt(velocity) + " km/h";
+
         RaycastHit hit;
         if (Physics.Raycast(scopeTransform.position, scopeTransform.forward, out hit))
         {
             if (hit.transform.tag == "Car")
             {
                 Car car = hit.transform.GetComponent<Car>();
-                velocity = Car.speed();
-                if (Input.GetMouseButtonDown(0) && isScoped) // 0 is the left mouse button
+
+                if (car != null)
                 {
-                    playerCamera.Shake();
-                    if (car != null)
+                    velocity = car.velocity;
+                    if (Input.GetMouseButtonDown(0) && isScoped && canShoot) // 0 is the left mouse button
                     {
+                        audioSource.PlayOneShot(shootSound);
+                        StartCoroutine(ShootWithCooldown());
+                        playerCamera.Shake();
                         car.Explode();
                         Debug.Log("Car Exploded");
                     }
@@ -69,8 +80,31 @@ public class SniperShoot : MonoBehaviour
             }
             else
             {
+                if (Input.GetMouseButtonDown(0) && isScoped && canShoot) // 0 is the left mouse button
+                {
+                    audioSource.PlayOneShot(shootSound);
+                    StartCoroutine(ShootWithCooldown());
+                    playerCamera.Shake();
+                }
+
                 velocity = 0;
             }
         }
+        else
+        {
+            if (Input.GetMouseButtonDown(0) && isScoped && canShoot) // 0 is the left mouse button
+            {
+                audioSource.PlayOneShot(shootSound);
+                StartCoroutine(ShootWithCooldown());
+                playerCamera.Shake();
+            }
+        }
+    }
+
+    private IEnumerator ShootWithCooldown()
+    {
+        canShoot = false;
+        yield return new WaitForSeconds(0.5f);
+        canShoot = true;
     }
 }
