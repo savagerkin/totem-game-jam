@@ -1,7 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -9,11 +9,15 @@ using UnityEngine;
 public class Road : MonoBehaviour
 {
     public GameObject carPrefab;
-    public Transform spawnPosition;
+    public Transform[] spawns;
     public ScoreSystem scoreSystem;
+    public int maxCars = 15;
 
-    public Vector3 laneDirection;
-    public float spawnDelay;
+    public float minSpawnDelay;
+    public float maxSpawnDelay;
+
+    public float minSpeed;
+    public float maxSpeed;
 
     [Header("Collision Avoidance")]
     public bool enableCollisionAvoidance;
@@ -21,28 +25,37 @@ public class Road : MonoBehaviour
     public float deceleration;
 
     private List<Car> cars;
-
+    private List<Car>[] carsPerLane = new List<Car>[4];
 
     private void Start()
     {
         cars = new List<Car>();
+        carsPerLane[0] = new List<Car>();
+        carsPerLane[1] = new List<Car>();
+        carsPerLane[2] = new List<Car>();
+        carsPerLane[3] = new List<Car>();
         StartCoroutine(SpawnLoop());
     }
 
     private IEnumerator SpawnLoop()
     {
         while (true) {
-            laneDirection = transform.rotation * Vector3.forward;
+            if (cars.Count() < maxCars) {
+                int lane = UnityEngine.Random.Range(0, 3);
 
-            Car spawnedCar = Instantiate(carPrefab, spawnPosition.position, spawnPosition.rotation).GetComponent<Car>();
-            spawnedCar.direction = laneDirection;
-            spawnedCar.velocity = Random.Range(1, 10);
-            spawnedCar.acceleration = Random.Range(1, 10);
-            spawnedCar.scoreSystem = scoreSystem;
+                Transform spawn = spawns[lane];
 
-            cars.Add(spawnedCar);
+                Car spawnedCar = Instantiate(carPrefab, spawn.position, spawn.rotation).GetComponent<Car>();
+                spawnedCar.direction = spawn.forward;
+                spawnedCar.velocity = UnityEngine.Random.Range(minSpeed, maxSpeed);
+                spawnedCar.acceleration = 0;
+                spawnedCar.scoreSystem = scoreSystem;
 
-            yield return new WaitForSeconds(spawnDelay);
+                cars.Add(spawnedCar);
+            }
+
+
+            yield return new WaitForSeconds(UnityEngine.Random.Range(minSpawnDelay, maxSpawnDelay));
         }
     }
 
@@ -54,57 +67,61 @@ public class Road : MonoBehaviour
     }
 
     private void CollisionAvoidance() {
-        foreach (float checkedTime in checkedTimes)
+        foreach (List<Car> cars in carsPerLane)
         {
-            List<Vector3> futurePositions = new List<Vector3>();
-
-            foreach (Car car in cars)
+            foreach (float checkedTime in checkedTimes)
             {
-                Vector3 futurePosition = car.transform.position + car.direction * (car.velocity * checkedTime + (car.acceleration * Mathf.Pow(checkedTime, 2) / 2));
-                futurePositions.Add(futurePosition);
-            }
+                List<Vector3> futurePositions = new List<Vector3>();
 
-            for (int i = 0; i < cars.Count; i++)
-            {
-                bool front = true;
-                bool collided = false;
-
-                for (int j = 0; j < cars.Count; j++)
+                foreach (Car car in cars)
                 {
-                    if (i == j)
-                    {
-                        continue;
-                    }
-
-                    if (Vector3.Dot(cars[i].transform.position - cars[j].transform.position, laneDirection) < 0)
-                    {
-                        front = false;
-                    }
-
-                    bool overlapped = Physics.ComputePenetration(
-                        cars[i].boxCollider, futurePositions[i], cars[i].transform.rotation,
-                        cars[j].boxCollider, futurePositions[j], cars[j].transform.rotation,
-                        out _, out _
-                    );
-
-                    collided |= overlapped;
+                    Vector3 futurePosition = car.transform.position + car.direction * (car.velocity * checkedTime + (car.acceleration * Mathf.Pow(checkedTime, 2) / 2));
+                    futurePositions.Add(futurePosition);
                 }
 
-                if (!front && collided)
+                for (int i = 0; i < cars.Count; i++)
                 {
-                    StartCoroutine(DecelerationCoroutine(cars[i]));
+                    Car front = cars[i];
+                    bool collided = false;
+
+                    for (int j = 0; j < cars.Count; j++)
+                    {
+                        if (i == j)
+                        {
+                            continue;
+                        }
+
+                        if (Vector3.Dot(front.transform.position - cars[j].transform.position, cars[i].direction) < 0)
+                        {
+                            front = cars[j];
+                        }
+
+                        bool overlapped = Physics.ComputePenetration(
+                            cars[i].boxCollider, futurePositions[i], cars[i].transform.rotation,
+                            cars[j].boxCollider, futurePositions[j], cars[j].transform.rotation,
+                            out _, out _
+                        );
+
+                        collided |= overlapped;
+                    }
+
+                    if (cars[i] != front && collided)
+                    {
+                        StartCoroutine(DecelerationCoroutine(cars[i], front.velocity));
+                    }
                 }
             }
         }
     }
 
-    public IEnumerator DecelerationCoroutine(Car car) {
-        car.acceleration = deceleration;
+    public IEnumerator DecelerationCoroutine(Car car, float newVelocity) {
+        car.velocity = 0;
         yield return new WaitForSeconds(0.5f);
-        car.acceleration = Random.Range(3, 6);
+        car.velocity = newVelocity;
     }
 
     public void CarDespawned(Car car) {
         cars.Remove(car);
+        carsPerLane[car.lane].Remove(car);
     }
 }
