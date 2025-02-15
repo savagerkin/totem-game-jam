@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using UnityEditor.Rendering.Analytics;
 using UnityEngine;
 using static UnityEditor.FilePathAttribute;
+using Random = UnityEngine.Random;
 
 public class Car : MonoBehaviour
 {
@@ -17,6 +19,13 @@ public class Car : MonoBehaviour
 
     public float explosionForce;
     public float deathDelay;
+
+    [SerializeField] private AudioClip carSound;
+
+    private void Start()
+    {
+        audioSource = gameObject.GetComponent<AudioSource>();
+    }
 
     private void Update()
     {
@@ -34,8 +43,10 @@ public class Car : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (moving) {
-            if (velocity <= 0) {
+        if (moving)
+        {
+            if (velocity <= 0)
+            {
                 acceleration = Random.Range(3, 6);
             }
 
@@ -43,20 +54,31 @@ public class Car : MonoBehaviour
             rb.MovePosition(newPosition);
         }
     }
+
     [SerializeField] private GameObject explosionEffect;
+    private AudioSource audioSource;
+    [SerializeField] private AudioClip boomSound;
+
+
     private IEnumerator Death()
     {
+        audioSource.loop = false;
+        audioSource.Stop();
         GameObject explosionInstance = Instantiate(explosionEffect, transform.position, Quaternion.identity);
+        audioSource.PlayOneShot(boomSound);
         yield return new WaitForSeconds(2);
         Destroy(gameObject);
         Destroy(explosionInstance, 2f);
     }
-    public void Explode() {
+
+    public void Explode()
+    {
         rb.isKinematic = false;
 
         float angle = Random.Range(-20, 20);
         float rotation = Random.Range(0, 360);
-        Vector3 direction = (Quaternion.AngleAxis(rotation, Vector3.up) * Quaternion.AngleAxis(angle, Vector3.forward)) * Vector3.up;
+        Vector3 direction =
+            (Quaternion.AngleAxis(rotation, Vector3.up) * Quaternion.AngleAxis(angle, Vector3.forward)) * Vector3.up;
 
         // Debug.DrawLine(transform.position, transform.position + direction * 3);
 

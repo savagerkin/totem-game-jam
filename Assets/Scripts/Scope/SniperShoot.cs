@@ -9,7 +9,6 @@ using UnityEngine.Rendering.Universal;
 public class SniperShoot : MonoBehaviour
 {
     private Volume volume;
-    private DepthOfField depthOfField;
     private bool isScoped = false;
     private bool canShoot = true;
     [SerializeField] private Camera camera;
@@ -25,10 +24,8 @@ public class SniperShoot : MonoBehaviour
     {
         isScoped = false;
         volume = camera.GetComponent<Volume>();
-        if (volume.profile.TryGet(out DepthOfField dof))
-        {
-            depthOfField = dof;
-        }
+        
+        
     }
 
     [SerializeField] private Animator _animator;
@@ -44,13 +41,11 @@ public class SniperShoot : MonoBehaviour
                 sniperTransform.localPosition = new Vector3(0, 0, 0);
                 sniperTransform.localRotation = Quaternion.identity;
                 _animator.SetTrigger("PutUp");
-                depthOfField.active = true;
                 isScoped = true;
             }
             else
             {
                 gunSway.enabled = true;
-                depthOfField.active = false;
                 _animator.SetTrigger("PutDown");
                 isScoped = false;
             }
