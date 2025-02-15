@@ -37,6 +37,31 @@ public class Road : MonoBehaviour
         StartCoroutine(SpawnLoop());
     }
 
+    private bool slowed = false;
+
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            if (!slowed)
+            {
+                slowed = true;
+                foreach (Car car in cars)
+                {
+                    car.slowed = true;
+                }
+            }
+            else if (slowed)
+            {
+                slowed = false;
+                foreach (Car car in cars)
+                {
+                    car.slowed = false;
+                }
+            }
+        }
+    }
+
     private IEnumerator SpawnLoop()
     {
         while (true) {
@@ -50,6 +75,8 @@ public class Road : MonoBehaviour
                 spawnedCar.velocity = UnityEngine.Random.Range(minSpeed, maxSpeed);
                 spawnedCar.acceleration = 0;
                 spawnedCar.scoreSystem = scoreSystem;
+                spawnedCar.road = this;
+                spawnedCar.lane = lane;
 
                 cars.Add(spawnedCar);
             }

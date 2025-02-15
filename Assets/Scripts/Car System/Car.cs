@@ -26,6 +26,10 @@ public class Car : MonoBehaviour
     private bool speeding;
     public float maxVelocity;
 
+    public bool slowed = false;
+
+    public Road road;
+
     [SerializeField] private AudioClip carSound;
 
     private void Start()
@@ -76,8 +80,17 @@ public class Car : MonoBehaviour
                 acceleration = Random.Range(3, 6);
             }
 
-            Vector3 newPosition = transform.position + direction * velocity * Time.deltaTime;
-            rb.MovePosition(newPosition);
+            if (slowed)
+            {
+                Vector3 newPosition = transform.position + 0.3f * direction * velocity * Time.deltaTime;
+                rb.MovePosition(newPosition);
+            }
+            else
+            {
+                Vector3 newPosition = transform.position + direction * velocity * Time.deltaTime;
+                rb.MovePosition(newPosition);
+            }
+
         }
     }
 
@@ -93,6 +106,9 @@ public class Car : MonoBehaviour
         GameObject explosionInstance = Instantiate(explosionEffect, transform.position, Quaternion.identity);
         audioSource.PlayOneShot(boomSound);
         yield return new WaitForSeconds(2);
+
+        road.CarDespawned(this);
+
         Destroy(gameObject);
         Destroy(explosionInstance, 2f);
     }
