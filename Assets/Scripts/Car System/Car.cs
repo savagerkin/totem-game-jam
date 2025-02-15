@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
-using UnityEditor.Rendering.Analytics;
 using UnityEngine;
-using static UnityEditor.FilePathAttribute;
 using Random = UnityEngine.Random;
 
 public class Car : MonoBehaviour

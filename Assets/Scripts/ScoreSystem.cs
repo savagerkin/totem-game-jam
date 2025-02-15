@@ -75,8 +75,6 @@ public class ScoreSystem : MonoBehaviour
         float normalizedScore = (score - minScore) / (maxScore - minScore);
         slider.value = normalizedScore;
 
-        Debug.Log(normalizedScore);
-
         if (normalizedScore < 1.0f / 3.0f)
         {
             watcher.sprite = watcherAngry;
