@@ -6,11 +6,14 @@ using static UnityEditor.FilePathAttribute;
 public class Car : MonoBehaviour
 {
     public Rigidbody rb;
+    public BoxCollider boxCollider;
 
-    public Vector3 movementDir;
-    public float speed;
+    public Vector3 direction;
+    public float velocity;
     public float acceleration;
     public float lifetime;
+
+    public bool moving = true;
 
     public float explosionForce;
     public float deathDelay;
@@ -23,13 +26,21 @@ public class Car : MonoBehaviour
             Destroy(gameObject);
         }
 
-        speed += acceleration * Time.deltaTime;
-        Vector3 newPosition = transform.position + movementDir * speed * Time.deltaTime;
+        if (moving)
+        {
+            velocity += acceleration * Time.deltaTime;
+        }
+    }
 
-        transform.position = newPosition;
+    private void FixedUpdate()
+    {
+        if (moving) {
+            if (velocity <= 0) {
+                acceleration = Random.Range(3, 6);
+            }
 
-        if (Input.GetKeyDown(KeyCode.K)) {
-            Explode();
+            Vector3 newPosition = transform.position + direction * velocity * Time.deltaTime;
+            rb.MovePosition(newPosition);
         }
     }
 
