@@ -20,8 +20,17 @@ public class Player : MonoBehaviour
         playerCamera.Initialize(playerCharacter.GetCameraTarget());
     }
 
+    public void StopControls()
+    {
+        _inputActions.Disable();
+    }
+    public void StartControls()
+    {
+        _inputActions.Enable();
+    }
     private void OnDestroy()
     {
+        
         _inputActions.Dispose();
     }
 
