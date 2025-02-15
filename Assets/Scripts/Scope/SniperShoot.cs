@@ -1,3 +1,4 @@
+using TMPro;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -14,7 +15,7 @@ public class SniperShoot : MonoBehaviour
     [SerializeField] private Transform sniperTransform;
     [SerializeField] private Transform scopeTransform;
     [SerializeField] private GunSway gunSway;
-
+    [SerializeField] private TMP_Text velocityText;
     void Start()
     {
         isScoped = false;
@@ -48,7 +49,7 @@ public class SniperShoot : MonoBehaviour
                 isScoped = false;
             }
         }
-        
+        velocityText.text = velocity + " km/h";
         RaycastHit hit;
         if (Physics.Raycast(scopeTransform.position, scopeTransform.forward, out hit))
         {
