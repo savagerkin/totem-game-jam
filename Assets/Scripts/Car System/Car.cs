@@ -13,10 +13,16 @@ public class Car : MonoBehaviour
     public float acceleration;
     public float lifetime;
 
+    public float noShotReward;
+
+    public float averageVelocity;
+
     public bool moving = true;
 
     public float explosionForce;
     public float deathDelay;
+
+    public int lane;
 
     private void Update()
     {

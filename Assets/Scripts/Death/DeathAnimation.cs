@@ -27,17 +27,9 @@ public class DeathAnimation : MonoBehaviour
         sniperShoot = gameObject.gameObject.GetComponent<SniperShoot>();
     }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            StartCoroutine(die());
-        }
-    }
-
     private float toSeconds = 42;
     private float fromSeconds = 40;
-    private IEnumerator die()
+    public IEnumerator die()
     {
         motor.enabled = false;
         audioSource.time = fromSeconds;
