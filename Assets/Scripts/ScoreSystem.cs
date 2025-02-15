@@ -22,6 +22,7 @@ public class ScoreSystem : MonoBehaviour
     public Image sliderImage;
 
     public DeathAnimation deathAnimation;
+    public SpeedLimitSign speedLimitSign;
 
     [Header("Settings")]
     public int[] speedLimits = new int[4];
@@ -38,6 +39,13 @@ public class ScoreSystem : MonoBehaviour
     public float score;
 
     private bool dead = false;
+
+    public void Update()
+    {
+        for (int i = 0; i < speedLimits.Length; i++) {
+            speedLimitSign.speedLimitTexts[i].text = speedLimits[i].ToString();
+        }
+    }
 
     public void updateScore(Car car, ScoreAction action) {
         if (dead) return;
