@@ -1,5 +1,9 @@
+using System;
 using System.Collections;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public struct CameraInput
 {
@@ -8,10 +12,15 @@ public struct CameraInput
 
 public class PlayerCamera : MonoBehaviour
 {
-    [SerializeField] private float sensivity = 0.1f;
+    [SerializeField] private Slider slider;
+    private float sensivity;
     [SerializeField] private float shakeDuration = 0.5f;
     [SerializeField] private float shakeMagnitude = 0.1f;
     private Vector3 _eulerAngles;
+    private void Update()
+    {
+        sensivity = slider.value;
+    }
 
     public void Initialize(Transform target)
     {
