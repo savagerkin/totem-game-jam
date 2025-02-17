@@ -433,15 +433,15 @@ Canvas:
   m_GameObject: {fileID: 55721737}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
+  m_RenderMode: 1
+  m_Camera: {fileID: 26326682}
+  m_PlaneDistance: 0.4
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
+  m_VertexColorAlwaysGammaSpace: 1
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -3436,12 +3436,12 @@ MonoBehaviour:
   sliderImage: {fileID: 2050054541}
   deathAnimation: {fileID: 1353517255}
   speedLimitSign: {fileID: 310839797}
-  speedLimits: 140000000a0000001c0000002b000000
+  speedLimits: 14000000050000001e0000002d000000
   minScore: -1000
   maxScore: 1000
   correctShotReward: 100
-  incorrectShotReward: -200
-  noShotRewardScaler: -0.02
+  incorrectShotReward: -900
+  noShotRewardScaler: -500
   correctlyShot: 0
   incorrectlyShot: 0
   notShot: 0
@@ -9982,10 +9982,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   carPrefab: {fileID: 5696112000705685962, guid: e1ec236d5a85194408608d63d8aaaa91, type: 3}
   spawns:
-  - {fileID: 1852674047}
-  - {fileID: 182789309}
-  - {fileID: 1932463874}
   - {fileID: 326021417}
+  - {fileID: 1932463874}
+  - {fileID: 182789309}
+  - {fileID: 1852674047}
   scoreSystem: {fileID: 478909138}
   maxCars: 8
   minSpawnDelay: 1.3

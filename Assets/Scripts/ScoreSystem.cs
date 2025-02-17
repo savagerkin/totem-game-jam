@@ -40,6 +40,11 @@ public class ScoreSystem : MonoBehaviour
 
     private bool dead = false;
 
+    private void Start()
+    {
+        updateUI();
+    }
+
     public void Update()
     {
         for (int i = 0; i < speedLimits.Length; i++) {
@@ -52,6 +57,12 @@ public class ScoreSystem : MonoBehaviour
 
         if (action == ScoreAction.Shot)
         {
+            Debug.Log("stuff");
+            Debug.Log(car.lane);
+            Debug.Log(car.velocity);
+            Debug.Log(speedLimits[car.lane]);
+ 
+
             if (speedLimits[car.lane] <= car.velocity)
             {
                 correctlyShot += 1;
@@ -63,7 +74,7 @@ public class ScoreSystem : MonoBehaviour
             }
         } else if (action == ScoreAction.NoShot) {
             notShot += 1;
-            score += noShotRewardScaler * car.noShotReward;
+            score += noShotRewardScaler;
         }
 
         if (score <= minScore) {
