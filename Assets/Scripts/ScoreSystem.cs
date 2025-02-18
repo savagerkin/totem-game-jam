@@ -9,17 +9,16 @@ public enum ScoreAction {
 public class ScoreSystem : MonoBehaviour
 {
     [Header("References")]
-    public Sprite watcherHappy;
-    public Sprite watcherMedium;
-    public Sprite watcherAngry;
+    [SerializeField] private GameObject pigOkay;
+    [SerializeField] private GameObject pigQuestioning;
+    [SerializeField] private GameObject pigAngry;
 
     public Color happyColor = Color.white;
     public Color mediumColor = Color.white;
     public Color angryColor = Color.white;
 
     public Image watcher;
-    public Slider slider;
-    public Image sliderImage;
+    public CircularLoadingBar circularBar;
 
     public DeathAnimation deathAnimation;
     public SpeedLimitSign speedLimitSign;
@@ -92,21 +91,25 @@ public class ScoreSystem : MonoBehaviour
     private void updateUI()
     {
         float normalizedScore = (score - minScore) / (maxScore - minScore);
-        slider.value = normalizedScore;
+        circularBar.SetValue(normalizedScore);
+
+        pigAngry.SetActive(false);
+        pigQuestioning.SetActive(false);
+        pigOkay.SetActive(false);
 
         if (normalizedScore < 1.0f / 3.0f)
         {
-            watcher.sprite = watcherAngry;
-            sliderImage.color = angryColor;
+            pigAngry.SetActive(true);
+            circularBar.SetFillColor(angryColor);
         }
         else if (normalizedScore < 2.0f / 3.0f)
         {
-            watcher.sprite = watcherMedium;
-            sliderImage.color = mediumColor;
+            pigQuestioning.SetActive(true);
+            circularBar.SetFillColor(mediumColor);
         }
         else {
-            watcher.sprite = watcherHappy;
-            sliderImage.color = happyColor;
+            pigOkay.SetActive(true);
+            circularBar.SetFillColor(happyColor);
         }
     }
 }

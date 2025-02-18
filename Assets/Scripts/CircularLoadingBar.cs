@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 [ExecuteInEditMode]
 public class CircularLoadingBar : MonoBehaviour
 {
     [SerializeField][Range(0.0f, 1.0f)] private float value = 1.0f;
+    [SerializeField] bool clockwise = true;
     [SerializeField] private int vertexCount = 100;
 
     [Header("Fill")]
@@ -17,7 +17,7 @@ public class CircularLoadingBar : MonoBehaviour
     [Header("Background")]
     [SerializeField] CanvasRenderer background;
     [SerializeField] private Color backgroundColor = Color.black;
-    
+
     private void Awake()
     {
         if (background == null) {
@@ -33,18 +33,62 @@ public class CircularLoadingBar : MonoBehaviour
             fillObject.AddComponent<RectTransform>();
             fill = fillObject.AddComponent<CanvasRenderer>();
         }
+
+        UpdateGraphics();
     }
 
-    private void Update()
+    public void SetValue(float value) { 
+        this.value = Mathf.Clamp(value, 0, 1);
+
+        if (fill != null) {
+            UpdateFill();
+        }
+    }
+
+    public void SetFillColor(Color color)
     {
+        this.fillColor = color;
+
+        if (fill != null)
+        {
+            UpdateFill();
+        }
+    }
+
+    private void OnValidate()
+    {
+        UpdateGraphics();
+    }
+
+    private void OnEnable()
+    {
+        UpdateGraphics();
+    }
+
+    private void OnDisable()
+    {
+        if (fill != null)
+        {
+            fill.Clear();
+        }
+
+        if (background != null)
+        {
+            background.Clear();
+        }
+    }
+
+    private void UpdateGraphics() {
         value = Mathf.Clamp(value, 0, 1);
 
-        if (vertexCount % 2 != 0) {
+        if (vertexCount % 2 != 0)
+        {
             vertexCount += 1;
         }
         vertexCount = Mathf.Max(vertexCount, 8);
 
-        if (fill != null) {
+        if (fill != null)
+        {
             UpdateFill();
         }
 
@@ -55,8 +99,11 @@ public class CircularLoadingBar : MonoBehaviour
     }
 
     private void UpdateFill() {
-
         float target_angle = 2 * Mathf.PI * value;
+
+        if (clockwise) {
+            target_angle *= -1;
+        }
 
         Mesh mesh = CreateCircularMesh(vertexCount, target_angle, false, fillColor);
         Material defaultCanvasMaterial = Canvas.GetDefaultCanvasMaterial();
@@ -134,6 +181,8 @@ public class CircularLoadingBar : MonoBehaviour
             triangles = triangles.ToArray(),
             colors = colors.ToArray()
         };
+
+        mesh.RecalculateBounds();
 
         return mesh;
     }
